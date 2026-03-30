@@ -13,38 +13,25 @@
   .tab-bar{display:flex;background:rgba(0,0,0,0.35);border-bottom:1px solid rgba(255,255,255,0.1);position:sticky;top:76px;z-index:100}
   .tab{flex:1;padding:13px 8px;text-align:center;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.45);cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s}
   .tab.active{color:#c8a951;border-bottom-color:#c8a951}
-
-  /* Screens */
   .screen{display:none;max-width:640px;margin:0 auto;padding:20px 16px 60px}
   .screen.active{display:block}
-
-  /* Login */
   #screen-login{max-width:400px}
   .login-header{text-align:center;padding:40px 0 24px}
   .login-header .icon{font-size:3rem;margin-bottom:12px}
   .login-header h2{font-size:1.3rem;font-weight:800;color:#c8a951}
-
-  /* Form elements */
   label{display:block;color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
   input[type=email],input[type=password],input[type=text]{width:100%;background:rgba(0,0,0,0.3);border:1.5px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;padding:12px 14px;font-size:1rem;font-family:inherit;transition:border-color 0.2s;margin-bottom:16px}
   input:focus{outline:none;border-color:#c8a951}
   input::placeholder{color:rgba(255,255,255,0.3)}
-
-  /* Buttons */
   .btn{display:block;width:100%;padding:14px;border-radius:12px;font-size:0.95rem;font-weight:700;letter-spacing:1px;border:none;cursor:pointer;transition:all 0.2s;text-transform:uppercase}
   .btn:active{transform:scale(0.97)}
   .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
   .btn-primary{background:linear-gradient(135deg,#c8a951,#a07830);color:#0d3b2e}
   .btn-success{background:linear-gradient(135deg,#2d8a45,#1a5c2a);color:#fff}
   .btn-danger{background:linear-gradient(135deg,#c0392b,#922b21);color:#fff}
-  .btn-sm{display:inline-block;width:auto;padding:8px 14px;font-size:0.78rem}
-
-  /* Cards */
   .card{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:18px;margin-bottom:14px}
   .card-title{font-size:0.85rem;font-weight:700;color:#c8a951;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
   .section-title{font-size:0.85rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1.5px;margin:20px 0 10px}
-
-  /* Toggle */
   .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:12px}
   .toggle-label{font-weight:600;font-size:0.95rem}
   .toggle-sub{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:2px}
@@ -54,16 +41,11 @@
   .toggle-slider::before{position:absolute;content:'';height:22px;width:22px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s}
   input:checked+.toggle-slider{background:#2d8a45}
   input:checked+.toggle-slider::before{transform:translateX(24px)}
-
-  /* Question list */
   .q-item{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;margin-bottom:8px}
   .q-item textarea{flex:1;background:transparent;border:none;color:#fff;font-size:0.9rem;font-family:inherit;resize:none;min-height:44px;line-height:1.4}
   .q-item textarea:focus{outline:none}
   .q-num{color:#c8a951;font-weight:800;font-size:1rem;min-width:22px;margin-top:2px}
-  .del-btn{background:rgba(192,57,43,0.3);border:1px solid rgba(192,57,43,0.5);color:#e74c3c;border-radius:8px;padding:6px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;flex-shrink:0}
-  .del-btn:hover{background:rgba(192,57,43,0.5)}
-
-  /* Results */
+  .del-btn{background:rgba(192,57,43,0.3);border:1px solid rgba(192,57,43,0.5);color:#e74c3c;border-radius:8px;padding:6px 10px;font-size:0.85rem;cursor:pointer;flex-shrink:0}
   .result-card{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:18px;margin-bottom:12px}
   .result-qtext{font-size:0.95rem;font-weight:600;margin-bottom:10px;line-height:1.4}
   .avg-display{display:flex;align-items:center;gap:12px;margin-bottom:10px}
@@ -75,27 +57,26 @@
   .comment-item{font-size:0.83rem;color:rgba(255,255,255,0.65);padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);line-height:1.4}
   .comment-item:last-child{border-bottom:none}
   .no-responses{text-align:center;padding:40px 16px;color:rgba(255,255,255,0.4);font-size:0.9rem}
-
-  /* AI Summary */
   .ai-box{background:rgba(0,0,0,0.4);border:1.5px solid #c8a951;border-radius:12px;padding:16px;margin-top:12px}
   .ai-box-title{font-size:0.75rem;font-weight:700;color:#c8a951;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
   .ai-text{color:rgba(255,255,255,0.85);font-size:0.88rem;line-height:1.6}
-
-  /* QR */
   #qr-container{display:flex;justify-content:center;margin:16px 0}
-  #qr-container img, #qr-container canvas{border-radius:12px;background:#fff;padding:12px}
-
-  /* Toast */
+  #qr-container img,#qr-container canvas{border-radius:12px;background:#fff;padding:12px}
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#2d8a45;color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:0.9rem;transition:transform 0.3s;z-index:999;white-space:nowrap}
   .toast.show{transform:translateX(-50%) translateY(0)}
   .toast.error{background:#c0392b}
-
-  /* Misc */
-  .logout-btn{float:right;background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);padding:5px 10px;border-radius:8px;font-size:0.72rem;cursor:pointer;letter-spacing:0.5px}
-  .logout-btn:hover{border-color:#c8a951;color:#c8a951}
-  .flex-row{display:flex;gap:10px;align-items:center;margin-bottom:10px}
-  .flex-row input{margin-bottom:0;flex:1}
+  .logout-btn{float:right;background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);padding:5px 10px;border-radius:8px;font-size:0.72rem;cursor:pointer}
   .resp-count{font-size:0.82rem;color:rgba(255,255,255,0.5);margin-bottom:16px;text-align:center}
+  /* Survey list in settings */
+  .survey-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all 0.2s}
+  .survey-item:active{transform:scale(0.98)}
+  .survey-item.selected{border-color:#c8a951;background:rgba(200,169,81,0.12)}
+  .survey-item-info{flex:1}
+  .survey-item-title{font-weight:700;font-size:0.95rem;color:#fff}
+  .survey-item-meta{font-size:0.75rem;color:rgba(255,255,255,0.45);margin-top:2px}
+  .survey-item-badge{font-size:0.7rem;font-weight:700;padding:3px 8px;border-radius:20px;background:rgba(45,138,69,0.4);color:#4cd964;border:1px solid rgba(45,138,69,0.5)}
+  .active-label{font-size:0.72rem;color:#4cd964;font-weight:700;margin-left:6px}
+  .current-survey-bar{background:rgba(200,169,81,0.15);border:1px solid rgba(200,169,81,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.82rem;color:#c8a951;font-weight:600}
 </style>
 </head>
 <body>
@@ -103,14 +84,14 @@
   <div>
     <button id="logout-btn" class="logout-btn" style="display:none" onclick="logout()">Sign Out</button>
     <h1>HIE Feedback</h1>
-    <p>Admin Panel</p>
+    <p id="header-sub">Admin Panel</p>
   </div>
 </header>
 
 <nav id="tab-bar" class="tab-bar" style="display:none">
   <div class="tab active" id="tab-builder" onclick="switchTab('builder')">Builder</div>
   <div class="tab" id="tab-results" onclick="switchTab('results')">Results</div>
-  <div class="tab" id="tab-settings" onclick="switchTab('settings')">Settings</div>
+  <div class="tab" id="tab-settings" onclick="switchTab('settings')">Surveys</div>
 </nav>
 
 <!-- LOGIN -->
@@ -129,36 +110,41 @@
 
 <!-- BUILDER TAB -->
 <div id="screen-builder" class="screen">
-  <div class="card">
-    <div class="card-title">Questionnaire Title</div>
-    <input type="text" id="q-title" placeholder="e.g. HIE Social Comm Program Feedback">
-    <div class="section-title">Questions</div>
-    <div id="questions-list"></div>
-    <button class="btn btn-success" style="margin-top:8px" onclick="addQuestion()">+ Add Question</button>
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">Survey Active</div>
-        <div class="toggle-sub">Users can see and submit this survey</div>
+  <div id="no-survey-msg" style="display:none" class="no-responses">
+    Go to the <strong style="color:#c8a951">Surveys tab</strong> to select or create a survey.
+  </div>
+  <div id="builder-content">
+    <div id="current-survey-bar" class="current-survey-bar" style="display:none"></div>
+    <div class="card">
+      <div class="card-title">Survey Title</div>
+      <input type="text" id="q-title" placeholder="e.g. HIE Social Comm Program Feedback">
+      <div class="section-title">Questions</div>
+      <div id="questions-list"></div>
+      <button class="btn btn-success" style="margin-top:8px" onclick="addQuestion()">+ Add Question</button>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Survey Active</div>
+          <div class="toggle-sub">Users can submit this survey via its link</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="active-toggle" onchange="toggleActive(this)">
+          <span class="toggle-slider"></span>
+        </label>
       </div>
-      <label class="toggle">
-        <input type="checkbox" id="active-toggle" onchange="toggleActive(this)">
-        <span class="toggle-slider"></span>
-      </label>
     </div>
-  </div>
-  <div style="display:flex;gap:10px">
-    <button class="btn btn-primary" onclick="saveQuestionnaire()">Save Questionnaire</button>
-  </div>
-  <div class="card" style="margin-top:20px">
-    <div class="card-title">QR Code & Survey Link</div>
-    <p style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:12px">Scan or share this with participants:</p>
-    <div id="qr-container"></div>
-    <p id="survey-url" style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-align:center;word-break:break-all;margin-top:8px"></p>
+    <button class="btn btn-primary" onclick="saveQuestionnaire()">Save Survey</button>
+    <div class="card" style="margin-top:20px">
+      <div class="card-title">QR Code & Survey Link</div>
+      <p style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:12px">Scan or share this link with participants:</p>
+      <div id="qr-container"></div>
+      <p id="survey-url" style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-align:center;word-break:break-all;margin-top:8px"></p>
+    </div>
   </div>
 </div>
 
 <!-- RESULTS TAB -->
 <div id="screen-results" class="screen">
+  <div id="results-survey-bar" class="current-survey-bar" style="display:none"></div>
   <div id="results-container"><div class="no-responses">Loading results...</div></div>
   <div style="margin-top:16px">
     <button class="btn btn-primary" id="ai-btn" onclick="generateAISummary()">Generate AI Summary of Comments</button>
@@ -169,18 +155,22 @@
   </div>
 </div>
 
-<!-- SETTINGS TAB -->
+<!-- SURVEYS TAB -->
 <div id="screen-settings" class="screen">
   <div class="card">
+    <div class="card-title">Your Surveys</div>
+    <div id="survey-list"><div class="no-responses" style="padding:16px 0">Loading surveys...</div></div>
+    <button class="btn btn-success" style="margin-top:12px" onclick="createNewSurvey()">+ Create New Survey</button>
+  </div>
+  <div class="card">
     <div class="card-title">Claude API Key</div>
-    <p style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:14px;line-height:1.5">Used to generate AI summaries of comments. Get a key at <strong style="color:#c8a951">console.anthropic.com</strong> → API Keys.</p>
+    <p style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:14px;line-height:1.5">Used to generate AI summaries. Get a key at <strong style="color:#c8a951">console.anthropic.com</strong> → API Keys.</p>
     <label>API Key</label>
     <input type="password" id="api-key-input" placeholder="sk-ant-...">
     <button class="btn btn-primary" onclick="saveApiKey()">Save API Key</button>
   </div>
   <div class="card">
     <div class="card-title">Admin Account</div>
-    <p style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:12px">To change your password, visit <strong style="color:#c8a951">console.firebase.google.com</strong> → Authentication → Users.</p>
     <button class="btn btn-danger" onclick="logout()">Sign Out</button>
   </div>
 </div>
@@ -192,7 +182,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-// ─── PASTE YOUR FIREBASE CONFIG HERE ────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyBP8QXmshUe0thrGkPgEkTYVmlQtQFkWAA",
   authDomain: "hie-social-comm-feedback.firebaseapp.com",
@@ -201,29 +190,26 @@ const firebaseConfig = {
   messagingSenderId: "320222398545",
   appId: "1:320222398545:web:94cd510828920188b71070"
 };
-// ────────────────────────────────────────────────────────────────────────────
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// Survey URL — update this after enabling GitHub Pages
-const SURVEY_URL = 'https://subaho2003-png.github.io/HIEFeedback/index.html';
+const BASE_URL = 'https://subaho2003-png.github.io/HIEFeedback/index.html';
 
-let questionnaire = { title: '', questions: [], active: false };
-let currentTab = 'builder';
+let currentSurveyId = null;
+let currentSurvey = { title: '', questions: [], active: false };
+let allSurveys = [];
 let allResponses = [];
 let questionList = [];
 
-// ── AUTH ────────────────────────────────────────────────────────────────────
+// ── AUTH ─────────────────────────────────────────────────────────────────────
 auth.onAuthStateChanged(user => {
   if (user) {
     document.getElementById('screen-login').classList.remove('active');
     document.getElementById('tab-bar').style.display = 'flex';
     document.getElementById('logout-btn').style.display = 'inline-block';
-    switchTab('builder');
-    loadQuestionnaire();
-    generateQR();
+    switchTab('settings');
   } else {
     showScreen('login');
     document.getElementById('tab-bar').style.display = 'none';
@@ -237,43 +223,33 @@ async function doLogin() {
   const errEl = document.getElementById('login-error');
   const btn = document.getElementById('login-btn');
   errEl.style.display = 'none';
-  btn.disabled = true;
-  btn.textContent = 'Signing in...';
+  btn.disabled = true; btn.textContent = 'Signing in...';
   try {
     await auth.signInWithEmailAndPassword(email, pass);
-  } catch (e) {
-    errEl.textContent = 'Invalid email or password. Please try again.';
+  } catch(e) {
+    errEl.textContent = 'Invalid email or password.';
     errEl.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Sign In →';
+    btn.disabled = false; btn.textContent = 'Sign In →';
   }
 }
+function logout() { auth.signOut(); }
+document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 
-function logout() {
-  auth.signOut();
-}
-
-document.getElementById('login-pass').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
-
-// ── NAVIGATION ───────────────────────────────────────────────────────────────
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
   window.scrollTo(0, 0);
 }
-
 function switchTab(tab) {
-  currentTab = tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   showScreen(tab);
   if (tab === 'results') loadResults();
-  if (tab === 'settings') loadSettings();
+  if (tab === 'settings') loadSurveyList();
 }
 
-// ── TOAST ────────────────────────────────────────────────────────────────────
+// ── TOAST ─────────────────────────────────────────────────────────────────────
 function showToast(msg, isError) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -283,32 +259,96 @@ function showToast(msg, isError) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// ── BUILDER ──────────────────────────────────────────────────────────────────
-async function loadQuestionnaire() {
+// ── SURVEYS TAB ───────────────────────────────────────────────────────────────
+async function loadSurveyList() {
+  const list = document.getElementById('survey-list');
+  list.innerHTML = '<div style="color:rgba(255,255,255,0.4);font-size:0.85rem;padding:8px 0">Loading...</div>';
   try {
-    const doc = await db.collection('config').doc('questionnaire').get();
-    if (doc.exists) {
-      questionnaire = { title:'', questions:[], active:false, ...doc.data() };
+    const snap = await db.collection('questionnaires').orderBy('createdAt', 'desc').get();
+    allSurveys = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (allSurveys.length === 0) {
+      list.innerHTML = '<div style="color:rgba(255,255,255,0.4);font-size:0.85rem;padding:8px 0">No surveys yet. Create one below.</div>';
+      return;
     }
-    document.getElementById('q-title').value = questionnaire.title;
-    document.getElementById('active-toggle').checked = questionnaire.active;
-    renderQuestionList();
-  } catch(e) { console.error(e); }
+    list.innerHTML = '';
+    allSurveys.forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'survey-item' + (s.id === currentSurveyId ? ' selected' : '');
+      item.id = 'sitem-' + s.id;
+      item.onclick = () => selectSurvey(s.id);
+      const date = s.createdAt ? new Date(s.createdAt.toDate()).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+      item.innerHTML = `
+        <div class="survey-item-info">
+          <div class="survey-item-title">${s.title || 'Untitled Survey'}${s.active ? '<span class="active-label">● LIVE</span>' : ''}</div>
+          <div class="survey-item-meta">${s.questions ? s.questions.length : 0} questions · Created ${date}</div>
+        </div>
+        ${s.id === currentSurveyId ? '<span class="survey-item-badge">Selected</span>' : ''}
+      `;
+      list.appendChild(item);
+    });
+    loadSettings();
+  } catch(e) { list.innerHTML = '<div style="color:#e74c3c;font-size:0.85rem">Error loading surveys.</div>'; console.error(e); }
+}
+
+function selectSurvey(id) {
+  currentSurveyId = id;
+  const survey = allSurveys.find(s => s.id === id);
+  if (!survey) return;
+  currentSurvey = { title: survey.title||'', questions: survey.questions||[], active: survey.active||false };
+  // Update selected state in list
+  document.querySelectorAll('.survey-item').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('sitem-' + id);
+  if (el) {
+    el.classList.add('selected');
+    el.querySelector('.survey-item-info').insertAdjacentHTML('afterend', el.querySelector('.survey-item-badge') ? '' : '<span class="survey-item-badge">Selected</span>');
+  }
+  showToast('Survey loaded: ' + (survey.title || 'Untitled'));
+  loadBuilderWithCurrentSurvey();
+  switchTab('builder');
+}
+
+function createNewSurvey() {
+  currentSurveyId = null;
+  currentSurvey = { title: '', questions: [], active: false };
+  loadBuilderWithCurrentSurvey();
+  switchTab('builder');
+}
+
+// ── BUILDER ───────────────────────────────────────────────────────────────────
+function loadBuilderWithCurrentSurvey() {
+  document.getElementById('q-title').value = currentSurvey.title;
+  document.getElementById('active-toggle').checked = currentSurvey.active;
+  renderQuestionList();
+  updateCurrentSurveyBar();
+  generateQR();
+  document.getElementById('no-survey-msg').style.display = 'none';
+  document.getElementById('builder-content').style.display = 'block';
+}
+
+function updateCurrentSurveyBar() {
+  const bar = document.getElementById('current-survey-bar');
+  if (currentSurveyId) {
+    bar.textContent = 'Editing: ' + (currentSurvey.title || 'Untitled Survey');
+    bar.style.display = 'block';
+  } else {
+    bar.textContent = 'Creating new survey';
+    bar.style.display = 'block';
+  }
 }
 
 function renderQuestionList() {
   const list = document.getElementById('questions-list');
   list.innerHTML = '';
-  if (questionnaire.questions.length === 0) {
+  if (currentSurvey.questions.length === 0) {
     list.innerHTML = '<p style="color:rgba(255,255,255,0.35);font-size:0.85rem;margin-bottom:10px">No questions yet. Add one below.</p>';
     return;
   }
-  questionnaire.questions.forEach((q, i) => {
+  currentSurvey.questions.forEach((q, i) => {
     const item = document.createElement('div');
     item.className = 'q-item';
     item.innerHTML = `
       <span class="q-num">${i+1}.</span>
-      <textarea rows="2" placeholder="Enter question text..." oninput="questionnaire.questions[${i}].text=this.value">${q.text}</textarea>
+      <textarea rows="2" placeholder="Enter question text..." oninput="currentSurvey.questions[${i}].text=this.value">${q.text}</textarea>
       <button class="del-btn" onclick="deleteQuestion('${q.id}')">✕</button>
     `;
     list.appendChild(item);
@@ -316,38 +356,44 @@ function renderQuestionList() {
 }
 
 function addQuestion() {
-  questionnaire.questions.push({ id: Date.now().toString(), text: '' });
+  currentSurvey.questions.push({ id: Date.now().toString(), text: '' });
   renderQuestionList();
-  // Focus the new textarea
   const items = document.querySelectorAll('.q-item textarea');
   if (items.length) items[items.length-1].focus();
 }
 
 function deleteQuestion(id) {
-  questionnaire.questions = questionnaire.questions.filter(q => q.id !== id);
+  currentSurvey.questions = currentSurvey.questions.filter(q => q.id !== id);
   renderQuestionList();
 }
 
 async function saveQuestionnaire() {
-  questionnaire.title = document.getElementById('q-title').value.trim();
-  if (!questionnaire.title) { showToast('Please enter a title', true); return; }
-  if (questionnaire.questions.length === 0) { showToast('Add at least one question', true); return; }
-  const empty = questionnaire.questions.some(q => !q.text.trim());
-  if (empty) { showToast('All questions must have text', true); return; }
+  currentSurvey.title = document.getElementById('q-title').value.trim();
+  if (!currentSurvey.title) { showToast('Please enter a title', true); return; }
+  if (currentSurvey.questions.length === 0) { showToast('Add at least one question', true); return; }
+  if (currentSurvey.questions.some(q => !q.text.trim())) { showToast('All questions must have text', true); return; }
   try {
-    await db.collection('config').doc('questionnaire').set(questionnaire);
-    showToast('Questionnaire saved!');
+    if (currentSurveyId) {
+      await db.collection('questionnaires').doc(currentSurveyId).set(currentSurvey, { merge: true });
+    } else {
+      const docRef = await db.collection('questionnaires').add({ ...currentSurvey, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      currentSurveyId = docRef.id;
+    }
+    updateCurrentSurveyBar();
+    generateQR();
+    showToast('Survey saved!');
   } catch(e) { showToast('Save failed: ' + e.message, true); }
 }
 
 async function toggleActive(checkbox) {
-  questionnaire.active = checkbox.checked;
+  if (!currentSurveyId) { checkbox.checked = false; showToast('Save the survey first', true); return; }
+  currentSurvey.active = checkbox.checked;
   try {
-    await db.collection('config').doc('questionnaire').update({ active: checkbox.checked });
+    await db.collection('questionnaires').doc(currentSurveyId).update({ active: checkbox.checked });
     showToast(checkbox.checked ? 'Survey is now LIVE' : 'Survey deactivated');
   } catch(e) {
     checkbox.checked = !checkbox.checked;
-    questionnaire.active = checkbox.checked;
+    currentSurvey.active = checkbox.checked;
     showToast('Update failed', true);
   }
 }
@@ -356,27 +402,32 @@ async function toggleActive(checkbox) {
 function generateQR() {
   const container = document.getElementById('qr-container');
   container.innerHTML = '';
-  document.getElementById('survey-url').textContent = SURVEY_URL;
+  const url = currentSurveyId ? BASE_URL + '?id=' + currentSurveyId : BASE_URL;
+  document.getElementById('survey-url').textContent = url;
   try {
-    new QRCode(container, { text: SURVEY_URL, width: 220, height: 220, colorDark:'#0d3b2e', colorLight:'#ffffff' });
-  } catch(e) { container.textContent = SURVEY_URL; }
+    new QRCode(container, { text: url, width: 220, height: 220, colorDark:'#0d3b2e', colorLight:'#ffffff' });
+  } catch(e) { container.textContent = url; }
 }
 
 // ── RESULTS ───────────────────────────────────────────────────────────────────
 async function loadResults() {
   const container = document.getElementById('results-container');
+  const bar = document.getElementById('results-survey-bar');
   container.innerHTML = '<div class="no-responses">Loading...</div>';
   document.getElementById('ai-summary-box').style.display = 'none';
+  if (!currentSurveyId) {
+    bar.style.display = 'none';
+    container.innerHTML = '<div class="no-responses">Go to the <strong style="color:#c8a951">Surveys tab</strong> to select a survey first.</div>';
+    return;
+  }
+  bar.textContent = 'Results: ' + (currentSurvey.title || 'Untitled Survey');
+  bar.style.display = 'block';
   try {
-    const [configDoc, responsesSnap] = await Promise.all([
-      db.collection('config').doc('questionnaire').get(),
-      db.collection('responses').get()
+    const [surveyDoc, responsesSnap] = await Promise.all([
+      db.collection('questionnaires').doc(currentSurveyId).get(),
+      db.collection('responses').where('questionnaireId', '==', currentSurveyId).get()
     ]);
-    if (!configDoc.exists || !configDoc.data().questions) {
-      container.innerHTML = '<div class="no-responses">No questionnaire created yet.</div>';
-      return;
-    }
-    questionList = configDoc.data().questions;
+    questionList = surveyDoc.data().questions || [];
     allResponses = responsesSnap.docs.map(d => d.data());
     if (allResponses.length === 0) {
       container.innerHTML = '<div class="no-responses">No responses yet.<br>Share the QR code to get started.</div>';
@@ -384,10 +435,10 @@ async function loadResults() {
     }
     container.innerHTML = `<div class="resp-count">${allResponses.length} response${allResponses.length===1?'':'s'} total</div>`;
     questionList.forEach((q, i) => {
-      const answers = allResponses.flatMap(r => r.answers || []).filter(a => a.questionId === q.id);
-      const scores = answers.map(a => a.score).filter(s => typeof s === 'number');
+      const answers = allResponses.flatMap(r => r.answers||[]).filter(a => a.questionId===q.id);
+      const scores = answers.map(a => a.score).filter(s => typeof s==='number');
       const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '–';
-      const comments = answers.map(a => a.comment).filter(c => c && c.trim());
+      const comments = answers.map(a => a.comment).filter(c => c&&c.trim());
       const pct = scores.length ? (parseFloat(avg)/10*100) : 0;
       const card = document.createElement('div');
       card.className = 'result-card';
@@ -400,8 +451,7 @@ async function loadResults() {
             <div class="avg-label" style="margin-top:4px">${scores.length} rating${scores.length===1?'':'s'} · avg out of 10</div>
           </div>
         </div>
-        ${comments.length ? `
-        <div class="comments-list">
+        ${comments.length ? `<div class="comments-list">
           <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Comments (${comments.length})</div>
           ${comments.map(c=>`<div class="comment-item">"${c}"</div>`).join('')}
         </div>` : ''}
@@ -418,31 +468,21 @@ async function generateAISummary() {
   const btn = document.getElementById('ai-btn');
   const box = document.getElementById('ai-summary-box');
   const textEl = document.getElementById('ai-text');
-  // Collect all comments
   const allComments = questionList.map(q => {
     const answers = allResponses.flatMap(r => r.answers||[]).filter(a => a.questionId===q.id);
     const comments = answers.map(a=>a.comment).filter(c=>c&&c.trim());
     return { question: q.text, comments };
   }).filter(q => q.comments.length > 0);
-  if (allComments.length === 0) {
-    showToast('No comments to summarise yet', true);
-    return;
-  }
-  // Get API key
+  if (allComments.length === 0) { showToast('No comments to summarise yet', true); return; }
   let apiKey = '';
   try {
-    const settingsDoc = await db.collection('settings').doc('config').get();
-    apiKey = settingsDoc.exists ? settingsDoc.data().claudeApiKey : '';
+    const doc = await db.collection('settings').doc('config').get();
+    apiKey = doc.exists ? doc.data().claudeApiKey : '';
   } catch(e) {}
-  if (!apiKey) {
-    showToast('Add your Claude API key in Settings first', true);
-    switchTab('settings');
-    return;
-  }
-  btn.disabled = true;
-  btn.textContent = 'Generating summary...';
+  if (!apiKey) { showToast('Add your Claude API key in Settings first', true); switchTab('settings'); return; }
+  btn.disabled = true; btn.textContent = 'Generating summary...';
   box.style.display = 'none';
-  const prompt = `You are summarising participant feedback for an HIE Social Communication program. Please provide a concise, constructive summary (under 200 words) of the following comments, highlighting key themes and any actionable insights. Be encouraging and professional in tone.\n\n` +
+  const prompt = `You are summarising participant feedback for an HIE Social Communication program. Provide a concise, constructive summary (under 200 words) highlighting key themes and actionable insights. Be encouraging and professional.\n\n` +
     allComments.map(q => `Question: "${q.question}"\nComments:\n${q.comments.map(c=>`- ${c}`).join('\n')}`).join('\n\n');
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -453,22 +493,15 @@ async function generateAISummary() {
         'anthropic-dangerous-direct-browser-access': 'true',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 600,
-        messages: [{ role: 'user', content: prompt }]
-      })
+      body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:600, messages:[{role:'user',content:prompt}] })
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error?.message || 'API error');
     textEl.textContent = data.content[0].text;
     box.style.display = 'block';
-    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  } catch(e) {
-    showToast('AI summary failed: ' + e.message, true);
-  }
-  btn.disabled = false;
-  btn.textContent = 'Generate AI Summary of Comments';
+    box.scrollIntoView({ behavior:'smooth', block:'start' });
+  } catch(e) { showToast('AI summary failed: ' + e.message, true); }
+  btn.disabled = false; btn.textContent = 'Generate AI Summary of Comments';
 }
 
 // ── SETTINGS ──────────────────────────────────────────────────────────────────
