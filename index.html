@@ -5,206 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <title>HIE Social Comm Feedback</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d3b2e;color:#fff;min-height:100vh}
-  header{background:linear-gradient(135deg,#0d3b2e,#1a5c45);padding:20px 20px 16px;text-align:center;border-bottom:3px solid #c8a951;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.4)}
-  header h1{font-size:1.6rem;font-weight:800;color:#c8a951;letter-spacing:2px;line-height:1.2}
-  header p{color:rgba(255,255,255,0.7);font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
-  .screen{display:none;max-width:600px;margin:0 auto;padding:24px 16px 60px}
-  .screen.active{display:block}
-  .card{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px;margin-bottom:16px}
-  .card-title{font-size:1.1rem;font-weight:700;color:#c8a951;margin-bottom:8px}
-  .card-sub{color:rgba(255,255,255,0.65);font-size:0.85rem;line-height:1.5}
-  .btn{display:block;width:100%;padding:15px;border-radius:12px;font-size:1rem;font-weight:700;letter-spacing:1px;border:none;cursor:pointer;transition:all 0.2s;text-transform:uppercase}
-  .btn:active{transform:scale(0.97)}
-  .btn-primary{background:linear-gradient(135deg,#c8a951,#a07830);color:#0d3b2e}
-  .btn-success{background:linear-gradient(135deg,#2d8a45,#1a5c2a);color:#fff}
-  .question-block{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:18px;margin-bottom:14px}
-  .question-block.error{border-color:#e74c3c}
-  .q-text{font-size:1rem;font-weight:600;color:#fff;margin-bottom:14px;line-height:1.4}
-  .score-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-  .score-btn{min-width:44px;min-height:44px;border-radius:8px;border:2px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.08);color:#fff;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;flex:1;max-width:54px}
-  .score-btn:active{transform:scale(0.92)}
-  .score-btn.selected{background:#c8a951;border-color:#c8a951;color:#0d3b2e}
-  .score-labels{display:flex;justify-content:space-between;font-size:0.7rem;color:rgba(255,255,255,0.45);margin-bottom:10px;padding:0 2px}
-  .comment-label{color:rgba(255,255,255,0.6);font-size:0.78rem;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
-  textarea{width:100%;background:rgba(0,0,0,0.3);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;padding:10px 12px;font-size:0.9rem;font-family:inherit;resize:vertical;min-height:72px;transition:border-color 0.2s}
-  textarea:focus{outline:none;border-color:#c8a951}
-  textarea::placeholder{color:rgba(255,255,255,0.3)}
-  .error-msg{color:#e74c3c;font-size:0.82rem;margin-top:8px;display:none}
-  .thankyou-icon{font-size:3.5rem;text-align:center;margin-bottom:16px}
-  .thankyou-title{font-size:1.5rem;font-weight:800;color:#c8a951;text-align:center;margin-bottom:8px}
-  .thankyou-sub{color:rgba(255,255,255,0.7);text-align:center;font-size:0.95rem;line-height:1.5}
-  #loading{text-align:center;padding:60px 16px;color:rgba(255,255,255,0.6)}
-  #inactive-msg{text-align:center;padding:60px 16px}
-  #inactive-msg .icon{font-size:3rem;margin-bottom:16px}
-  #inactive-msg p{color:rgba(255,255,255,0.6);font-size:0.95rem}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d3b2e;color:#fff;min-height:100vh;display:flex;flex-direction:column}
+  header{background:linear-gradient(135deg,#0d3b2e,#1a5c45);padding:40px 20px 32px;text-align:center;border-bottom:3px solid #c8a951}
+  header h1{font-size:2rem;font-weight:800;color:#c8a951;letter-spacing:3px;margin-bottom:8px}
+  header p{color:rgba(255,255,255,0.6);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase}
+  .container{max-width:400px;margin:0 auto;padding:40px 20px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px}
+  .big-btn{display:block;width:100%;padding:22px 20px;border-radius:16px;border:none;cursor:pointer;text-align:left;transition:all 0.2s;text-decoration:none}
+  .big-btn:active{transform:scale(0.97)}
+  .big-btn-icon{font-size:2rem;margin-bottom:8px;display:block}
+  .big-btn-title{font-size:1.2rem;font-weight:800;display:block;margin-bottom:4px}
+  .big-btn-sub{font-size:0.8rem;opacity:0.75;display:block}
+  .btn-admin{background:linear-gradient(135deg,#c8a951,#a07830);color:#0d3b2e}
+  .btn-survey{background:linear-gradient(135deg,#2d8a45,#1a5c2a);color:#fff;border:1.5px solid rgba(255,255,255,0.15)}
 </style>
 </head>
 <body>
 <header>
-  <h1>HIE Social Comm</h1>
-  <p id="header-sub">Feedback Survey</p>
+  <h1>HIE Feedback</h1>
+  <p>Social Communication Program</p>
 </header>
-
-<div id="loading" class="screen active">Loading survey...</div>
-
-<div id="inactive-msg" class="screen">
-  <div class="icon">📋</div>
-  <p>No active survey at this time.<br>Please check back later.</p>
+<div class="container">
+  <a href="admin.html" class="big-btn btn-admin">
+    <span class="big-btn-icon">🔒</span>
+    <span class="big-btn-title">Admin Panel</span>
+    <span class="big-btn-sub">Create surveys · View results · AI summaries</span>
+  </a>
+  <a href="survey.html" class="big-btn btn-survey">
+    <span class="big-btn-icon">📝</span>
+    <span class="big-btn-title">Take Survey</span>
+    <span class="big-btn-sub">Submit your feedback</span>
+  </a>
 </div>
-
-<div id="screen-welcome" class="screen">
-  <div style="padding:40px 0 20px;text-align:center">
-    <div style="font-size:3rem;margin-bottom:16px">📝</div>
-    <h2 id="welcome-title" style="font-size:1.4rem;font-weight:800;color:#c8a951;margin-bottom:10px"></h2>
-    <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;line-height:1.5;margin-bottom:8px">Rate each question from <strong>1 (low)</strong> to <strong>10 (high)</strong>.<br>Comments are optional.</p>
-  </div>
-  <button class="btn btn-primary" onclick="showScreen('questions')">Start Survey →</button>
-</div>
-
-<div id="screen-questions" class="screen">
-  <div id="questions-container"></div>
-  <div id="submit-error" class="error-msg" style="display:none;margin-bottom:12px;font-size:0.85rem;color:#e74c3c;text-align:center"></div>
-  <button class="btn btn-primary" id="submit-btn" onclick="submitSurvey()">Submit Feedback →</button>
-</div>
-
-<div id="screen-thankyou" class="screen">
-  <div style="padding:60px 0">
-    <div class="thankyou-icon">✅</div>
-    <div class="thankyou-title">Thank You!</div>
-    <p class="thankyou-sub">Your feedback has been submitted successfully.<br>We appreciate your input.</p>
-  </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script>
-// ─── PASTE YOUR FIREBASE CONFIG HERE ────────────────────────────────────────
-const firebaseConfig = {
-  apiKey: "AIzaSyBP8QXmshUe0thrGkPgEkTYVmlQtQFkWAA",
-  authDomain: "hie-social-comm-feedback.firebaseapp.com",
-  projectId: "hie-social-comm-feedback",
-  storageBucket: "hie-social-comm-feedback.firebasestorage.app",
-  messagingSenderId: "320222398545",
-  appId: "1:320222398545:web:94cd510828920188b71070"
-};
-// ────────────────────────────────────────────────────────────────────────────
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-let questions = [];
-let scores = {};
-
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-async function init() {
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const surveyId = params.get('id');
-    let doc;
-    if (surveyId) {
-      doc = await db.collection('questionnaires').doc(surveyId).get();
-    } else {
-      // Fall back to first active survey
-      const snap = await db.collection('questionnaires').where('active', '==', true).limit(1).get();
-      doc = snap.empty ? null : snap.docs[0];
-    }
-    document.getElementById('loading').classList.remove('active');
-    if (!doc || !doc.exists || !doc.data().active) {
-      document.getElementById('inactive-msg').classList.add('active');
-      return;
-    }
-    const data = doc.data();
-    const docId = doc.id;
-    questions = data.questions || [];
-    document.getElementById('welcome-title').textContent = data.title || 'Feedback Survey';
-    document.getElementById('header-sub').textContent = data.title || 'Feedback Survey';
-    // Store surveyId for submission
-    window._surveyId = docId;
-    renderQuestions();
-    showScreen('welcome');
-  } catch (e) {
-    document.getElementById('loading').textContent = 'Error loading survey. Please try again.';
-    console.error(e);
-  }
-}
-
-function renderQuestions() {
-  const container = document.getElementById('questions-container');
-  container.innerHTML = '';
-  questions.forEach((q, i) => {
-    const block = document.createElement('div');
-    block.className = 'question-block';
-    block.id = 'qblock-' + q.id;
-    block.innerHTML = `
-      <div class="q-text">${i + 1}. ${q.text}</div>
-      <div class="score-labels"><span>Low</span><span>High</span></div>
-      <div class="score-row" id="scores-${q.id}">
-        ${[1,2,3,4,5,6,7,8,9,10].map(n =>
-          `<button class="score-btn" onclick="selectScore('${q.id}', ${n}, this)">${n}</button>`
-        ).join('')}
-      </div>
-      <div class="comment-label">Comments (optional)</div>
-      <textarea id="comment-${q.id}" placeholder="Share any additional thoughts..."></textarea>
-    `;
-    container.appendChild(block);
-  });
-}
-
-function selectScore(questionId, value, btn) {
-  scores[questionId] = value;
-  const row = document.getElementById('scores-' + questionId);
-  row.querySelectorAll('.score-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  document.getElementById('qblock-' + questionId).classList.remove('error');
-  document.getElementById('submit-error').style.display = 'none';
-}
-
-async function submitSurvey() {
-  // Validate all questions answered
-  const unanswered = questions.filter(q => scores[q.id] === undefined);
-  if (unanswered.length > 0) {
-    unanswered.forEach(q => document.getElementById('qblock-' + q.id).classList.add('error'));
-    const errEl = document.getElementById('submit-error');
-    errEl.textContent = 'Please rate all questions before submitting.';
-    errEl.style.display = 'block';
-    document.getElementById('qblock-' + unanswered[0].id).scrollIntoView({behavior:'smooth', block:'center'});
-    return;
-  }
-
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  btn.textContent = 'Submitting...';
-
-  try {
-    const answers = questions.map(q => ({
-      questionId: q.id,
-      score: scores[q.id],
-      comment: (document.getElementById('comment-' + q.id).value || '').trim()
-    }));
-    await db.collection('responses').add({
-      submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      questionnaireId: window._surveyId || null,
-      answers
-    });
-    showScreen('thankyou');
-  } catch (e) {
-    btn.disabled = false;
-    btn.textContent = 'Submit Feedback →';
-    const errEl = document.getElementById('submit-error');
-    errEl.textContent = 'Submission failed. Please check your connection and try again.';
-    errEl.style.display = 'block';
-    console.error(e);
-  }
-}
-
-init();
-</script>
 </body>
 </html>
