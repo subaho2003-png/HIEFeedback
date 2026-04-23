@@ -372,6 +372,11 @@ function renderQuestionList() {
         `).join('')}
       </div>
       <button class="add-opt-btn" onclick="addOption('${q.id}')">+ Add option</button>
+      <div class="q-type-row" style="margin-top:8px">
+        <input type="checkbox" id="multi-${q.id}" ${q.multiSelect?'checked':''}
+          onchange="currentSurvey.questions[${i}].multiSelect=this.checked">
+        <label for="multi-${q.id}" style="color:rgba(255,255,255,0.6);font-size:0.78rem;font-weight:500;letter-spacing:0;text-transform:none;margin:0;cursor:pointer">Allow multiple selections</label>
+      </div>
     ` : '';
     item.innerHTML = `
       <div style="display:flex;gap:10px;align-items:flex-start;width:100%">
@@ -505,8 +510,11 @@ async function loadResults() {
       if (q.type === 'choice' && q.options && q.options.length) {
         const counts = {};
         q.options.forEach(opt => { counts[opt] = 0; });
-        qAnswers.forEach(a => { if (a.choice && counts[a.choice] !== undefined) counts[a.choice]++; });
-        const total = Object.values(counts).reduce((a,b) => a+b, 0);
+        qAnswers.forEach(a => {
+          const selected = a.choices || (a.choice ? [a.choice] : []);
+          selected.forEach(c => { if (counts[c] !== undefined) counts[c]++; });
+        });
+        const total = qAnswers.length;
         const barsHtml = q.options.map(opt => {
           const count = counts[opt] || 0;
           const pct = total ? Math.round(count / total * 100) : 0;
@@ -565,7 +573,10 @@ async function generateAISummary() {
     if (q.type === 'choice' && q.options && q.options.length) {
       const counts = {};
       q.options.forEach(opt => { counts[opt] = 0; });
-      qAnswers.forEach(a => { if (a.choice && counts[a.choice] !== undefined) counts[a.choice]++; });
+      qAnswers.forEach(a => {
+        const selected = a.choices || (a.choice ? [a.choice] : []);
+        selected.forEach(c => { if (counts[c] !== undefined) counts[c]++; });
+      });
       const total = Object.values(counts).reduce((a,b) => a+b, 0);
       if (total === 0) return null;
       const breakdown = q.options.map(opt => `${opt}: ${counts[opt]||0} (${Math.round((counts[opt]||0)/total*100)}%)`).join(', ');

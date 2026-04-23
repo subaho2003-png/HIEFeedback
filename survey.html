@@ -151,10 +151,10 @@ function renderQuestions() {
     if (q.type === 'choice' && q.options && q.options.length) {
       block.innerHTML = `
         <div class="q-text">${i + 1}. ${q.text}</div>
-        <div class="choice-hint">please check one</div>
+        <div class="choice-hint">${q.multiSelect ? 'please check all that apply' : 'please check one'}</div>
         <div class="choice-row" id="choices-${q.id}">
           ${q.options.map(opt =>
-            `<button class="choice-btn" onclick="selectChoice('${q.id}', this)">${opt}</button>`
+            `<button class="choice-btn" onclick="selectChoice('${q.id}', this, ${!!q.multiSelect})">${opt}</button>`
           ).join('')}
         </div>
         <div class="comment-label">Comments (optional)</div>
@@ -186,13 +186,22 @@ function selectScore(questionId, value, btn) {
   document.getElementById('submit-error').style.display = 'none';
 }
 
-function selectChoice(questionId, btn) {
-  scores[questionId] = btn.textContent;
-  const row = document.getElementById('choices-' + questionId);
-  row.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  document.getElementById('qblock-' + questionId).classList.remove('error');
-  document.getElementById('submit-error').style.display = 'none';
+function selectChoice(questionId, btn, multiSelect) {
+  if (multiSelect) {
+    btn.classList.toggle('selected');
+    const row = document.getElementById('choices-' + questionId);
+    const selected = [...row.querySelectorAll('.choice-btn.selected')].map(b => b.textContent);
+    scores[questionId] = selected.length ? selected : undefined;
+  } else {
+    scores[questionId] = btn.textContent;
+    const row = document.getElementById('choices-' + questionId);
+    row.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+  if (scores[questionId] !== undefined) {
+    document.getElementById('qblock-' + questionId).classList.remove('error');
+    document.getElementById('submit-error').style.display = 'none';
+  }
 }
 
 async function submitSurvey() {
@@ -215,7 +224,7 @@ async function submitSurvey() {
     const answers = questions.map(q => ({
       questionId: q.id,
       ...(q.type === 'choice'
-        ? { choice: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() }
+        ? { [q.multiSelect ? 'choices' : 'choice']: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() }
         : { score: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() })
     }));
     await db.collection('responses').add({
