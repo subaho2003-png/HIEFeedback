@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+got it<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -8,29 +8,27 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d3b2e;color:#fff;min-height:100vh;display:flex;flex-direction:column}
   header{background:linear-gradient(135deg,#0d3b2e,#1a5c45);padding:40px 20px 32px;text-align:center;border-bottom:3px solid #c8a951}
-  header h1{font-size:2rem;font-weight:800;color:#c8a951;letter-spacing:3px;margin-bottom:8px}
+  header h1{font-size:1.6rem;font-weight:800;color:#c8a951;letter-spacing:1px;margin-bottom:16px}
   header p{color:rgba(255,255,255,0.6);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase}
+  header .welcome{color:rgba(255,255,255,0.85);font-size:0.88rem;line-height:1.6;margin-top:14px;max-width:500px;margin-left:auto;margin-right:auto;text-align:left}
   .container{max-width:400px;margin:0 auto;padding:40px 20px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px}
+  .admin-banner{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 20px;background:rgba(200,169,81,0.12);border-bottom:1px solid rgba(200,169,81,0.3);text-decoration:none;color:#c8a951;font-size:0.78rem;font-weight:600;letter-spacing:1px;transition:background 0.2s}
+  .admin-banner:active{background:rgba(200,169,81,0.22)}
   .big-btn{display:block;width:100%;padding:22px 20px;border-radius:16px;border:none;cursor:pointer;text-align:left;transition:all 0.2s;text-decoration:none}
   .big-btn:active{transform:scale(0.97)}
   .big-btn-icon{font-size:2rem;margin-bottom:8px;display:block}
   .big-btn-title{font-size:1.2rem;font-weight:800;display:block;margin-bottom:4px}
   .big-btn-sub{font-size:0.8rem;opacity:0.75;display:block}
-  .btn-admin{background:linear-gradient(135deg,#c8a951,#a07830);color:#0d3b2e}
   .btn-survey{background:linear-gradient(135deg,#2d8a45,#1a5c2a);color:#fff;border:1.5px solid rgba(255,255,255,0.15)}
 </style>
 </head>
 <body>
+<a href="admin.html" class="admin-banner">🔒 Admin Panel</a>
 <header>
-  <h1>HIE Feedback</h1>
-  <p>Social Communication Program</p>
+  <h1>Harbour Isle East (HIE) Social Committee Survey</h1>
+  <p class="welcome">Dear HIE Residents,<br><br>The Harbour Isle East Social Committee values your input and would appreciate it if you and any other household member would take a few minutes to complete the short survey below so that we may plan future activities that address your interests. Thank you for your participation.</p>
 </header>
 <div class="container">
-  <a href="admin.html" class="big-btn btn-admin">
-    <span class="big-btn-icon">🔒</span>
-    <span class="big-btn-title">Admin Panel</span>
-    <span class="big-btn-sub">Create surveys · View results · AI summaries</span>
-  </a>
   <a href="survey.html" class="big-btn btn-survey">
     <span class="big-btn-icon">📝</span>
     <span class="big-btn-title">Take Survey</span>

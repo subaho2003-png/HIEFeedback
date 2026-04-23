@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+what is the usernma<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -46,6 +46,16 @@
   .q-item textarea:focus{outline:none}
   .q-num{color:#c8a951;font-weight:800;font-size:1rem;min-width:22px;margin-top:2px}
   .del-btn{background:rgba(192,57,43,0.3);border:1px solid rgba(192,57,43,0.5);color:#e74c3c;border-radius:8px;padding:6px 10px;font-size:0.85rem;cursor:pointer;flex-shrink:0}
+  .opt-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+  .opt-item{display:flex;gap:6px;align-items:center}
+  .opt-item input{flex:1;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:#fff;padding:7px 10px;font-size:0.85rem;font-family:inherit}
+  .opt-item input:focus{outline:none;border-color:#c8a951}
+  .opt-del{background:rgba(192,57,43,0.25);border:1px solid rgba(192,57,43,0.4);color:#e74c3c;border-radius:6px;padding:5px 8px;font-size:0.8rem;cursor:pointer}
+  .add-opt-btn{background:none;border:1px dashed rgba(255,255,255,0.25);color:rgba(255,255,255,0.5);border-radius:6px;padding:6px 10px;font-size:0.8rem;cursor:pointer;margin-top:4px;width:100%}
+  .q-type-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+  .q-type-row label{color:rgba(255,255,255,0.5);font-size:0.75rem;font-weight:600;margin:0}
+  .q-type-row select{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:#fff;padding:5px 8px;font-size:0.8rem;font-family:inherit;cursor:pointer}
+  .q-type-row select:focus{outline:none;border-color:#c8a951}
   .result-card{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:18px;margin-bottom:12px}
   .result-qtext{font-size:0.95rem;font-weight:600;margin-bottom:10px;line-height:1.4}
   .avg-display{display:flex;align-items:center;gap:12px;margin-bottom:10px}
@@ -346,20 +356,70 @@ function renderQuestionList() {
   currentSurvey.questions.forEach((q, i) => {
     const item = document.createElement('div');
     item.className = 'q-item';
+    item.style.flexDirection = 'column';
+    const isChoice = q.type === 'choice';
+    const optionsHtml = isChoice ? `
+      <div class="opt-list">
+        ${(q.options||[]).map((opt, oi) => `
+          <div class="opt-item">
+            <input type="text" value="${opt}" placeholder="Option ${oi+1}"
+              oninput="currentSurvey.questions[${i}].options[${oi}]=this.value">
+            <button class="opt-del" onclick="deleteOption('${q.id}',${oi})">✕</button>
+          </div>
+        `).join('')}
+      </div>
+      <button class="add-opt-btn" onclick="addOption('${q.id}')">+ Add option</button>
+    ` : '';
     item.innerHTML = `
-      <span class="q-num">${i+1}.</span>
-      <textarea rows="2" placeholder="Enter question text..." oninput="currentSurvey.questions[${i}].text=this.value">${q.text}</textarea>
-      <button class="del-btn" onclick="deleteQuestion('${q.id}')">✕</button>
+      <div style="display:flex;gap:10px;align-items:flex-start;width:100%">
+        <span class="q-num">${i+1}.</span>
+        <div style="flex:1">
+          <textarea rows="2" placeholder="Enter question text..."
+            oninput="currentSurvey.questions[${i}].text=this.value">${q.text}</textarea>
+          <div class="q-type-row">
+            <label>Type:</label>
+            <select onchange="changeQuestionType('${q.id}',this.value)">
+              <option value="choice" ${isChoice?'selected':''}>Multiple Choice</option>
+              <option value="score" ${!isChoice?'selected':''}>Rating 1–10</option>
+            </select>
+          </div>
+          ${optionsHtml}
+        </div>
+        <button class="del-btn" onclick="deleteQuestion('${q.id}')">✕</button>
+      </div>
     `;
     list.appendChild(item);
   });
 }
 
 function addQuestion() {
-  currentSurvey.questions.push({ id: Date.now().toString(), text: '' });
+  currentSurvey.questions.push({ id: Date.now().toString(), text: '', type: 'choice', options: ['', '', ''] });
   renderQuestionList();
   const items = document.querySelectorAll('.q-item textarea');
   if (items.length) items[items.length-1].focus();
+}
+
+function changeQuestionType(id, type) {
+  const q = currentSurvey.questions.find(q => q.id === id);
+  if (!q) return;
+  q.type = type;
+  if (type === 'choice' && !q.options) q.options = ['', '', ''];
+  renderQuestionList();
+}
+
+function addOption(qId) {
+  const q = currentSurvey.questions.find(q => q.id === qId);
+  if (!q) return;
+  if (!q.options) q.options = [];
+  q.options.push('');
+  renderQuestionList();
+}
+
+function deleteOption(qId, oi) {
+  const q = currentSurvey.questions.find(q => q.id === qId);
+  if (!q || !q.options) return;
+  q.options.splice(oi, 1);
+  renderQuestionList();
 }
 
 function deleteQuestion(id) {
@@ -435,27 +495,55 @@ async function loadResults() {
     }
     container.innerHTML = `<div class="resp-count">${allResponses.length} response${allResponses.length===1?'':'s'} total</div>`;
     questionList.forEach((q, i) => {
-      const answers = allResponses.flatMap(r => r.answers||[]).filter(a => a.questionId===q.id);
-      const scores = answers.map(a => a.score).filter(s => typeof s==='number');
-      const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '–';
-      const comments = answers.map(a => a.comment).filter(c => c&&c.trim());
-      const pct = scores.length ? (parseFloat(avg)/10*100) : 0;
+      const qAnswers = allResponses.flatMap(r => r.answers||[]).filter(a => a.questionId===q.id);
       const card = document.createElement('div');
       card.className = 'result-card';
-      card.innerHTML = `
-        <div class="result-qtext">${i+1}. ${q.text}</div>
-        <div class="avg-display">
-          <div class="avg-num">${avg}</div>
-          <div style="flex:1">
+      if (q.type === 'choice' && q.options && q.options.length) {
+        const counts = {};
+        q.options.forEach(opt => { counts[opt] = 0; });
+        qAnswers.forEach(a => { if (a.choice && counts[a.choice] !== undefined) counts[a.choice]++; });
+        const total = Object.values(counts).reduce((a,b) => a+b, 0);
+        const barsHtml = q.options.map(opt => {
+          const count = counts[opt] || 0;
+          const pct = total ? Math.round(count / total * 100) : 0;
+          return `<div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;font-size:0.88rem;margin-bottom:4px">
+              <span style="font-weight:600">${opt}</span>
+              <span style="color:rgba(255,255,255,0.55)">${count} (${pct}%)</span>
+            </div>
             <div class="score-bar"><div class="score-fill" style="width:${pct}%"></div></div>
-            <div class="avg-label" style="margin-top:4px">${scores.length} rating${scores.length===1?'':'s'} · avg out of 10</div>
+          </div>`;
+        }).join('');
+        const choiceComments = qAnswers.map(a => a.comment).filter(c => c&&c.trim());
+        card.innerHTML = `
+          <div class="result-qtext">${i+1}. ${q.text}</div>
+          <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:12px">${total} response${total===1?'':'s'}</div>
+          ${barsHtml}
+          ${choiceComments.length ? `<div class="comments-list">
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Comments (${choiceComments.length})</div>
+            ${choiceComments.map(c=>`<div class="comment-item">"${c}"</div>`).join('')}
+          </div>` : ''}
+        `;
+      } else {
+        const scoresArr = qAnswers.map(a => a.score).filter(s => typeof s==='number');
+        const avg = scoresArr.length ? (scoresArr.reduce((a,b)=>a+b,0)/scoresArr.length).toFixed(1) : '–';
+        const comments = qAnswers.map(a => a.comment).filter(c => c&&c.trim());
+        const pct = scoresArr.length ? (parseFloat(avg)/10*100) : 0;
+        card.innerHTML = `
+          <div class="result-qtext">${i+1}. ${q.text}</div>
+          <div class="avg-display">
+            <div class="avg-num">${avg}</div>
+            <div style="flex:1">
+              <div class="score-bar"><div class="score-fill" style="width:${pct}%"></div></div>
+              <div class="avg-label" style="margin-top:4px">${scoresArr.length} rating${scoresArr.length===1?'':'s'} · avg out of 10</div>
+            </div>
           </div>
-        </div>
-        ${comments.length ? `<div class="comments-list">
-          <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Comments (${comments.length})</div>
-          ${comments.map(c=>`<div class="comment-item">"${c}"</div>`).join('')}
-        </div>` : ''}
-      `;
+          ${comments.length ? `<div class="comments-list">
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Comments (${comments.length})</div>
+            ${comments.map(c=>`<div class="comment-item">"${c}"</div>`).join('')}
+          </div>` : ''}
+        `;
+      }
       container.appendChild(card);
     });
   } catch(e) {
@@ -468,12 +556,23 @@ async function generateAISummary() {
   const btn = document.getElementById('ai-btn');
   const box = document.getElementById('ai-summary-box');
   const textEl = document.getElementById('ai-text');
-  const allComments = questionList.map(q => {
-    const answers = allResponses.flatMap(r => r.answers||[]).filter(a => a.questionId===q.id);
-    const comments = answers.map(a=>a.comment).filter(c=>c&&c.trim());
-    return { question: q.text, comments };
-  }).filter(q => q.comments.length > 0);
-  if (allComments.length === 0) { showToast('No comments to summarise yet', true); return; }
+  const summaryData = questionList.map(q => {
+    const qAnswers = allResponses.flatMap(r => r.answers||[]).filter(a => a.questionId===q.id);
+    if (q.type === 'choice' && q.options && q.options.length) {
+      const counts = {};
+      q.options.forEach(opt => { counts[opt] = 0; });
+      qAnswers.forEach(a => { if (a.choice && counts[a.choice] !== undefined) counts[a.choice]++; });
+      const total = Object.values(counts).reduce((a,b) => a+b, 0);
+      if (total === 0) return null;
+      const breakdown = q.options.map(opt => `${opt}: ${counts[opt]||0} (${Math.round((counts[opt]||0)/total*100)}%)`).join(', ');
+      return { question: q.text, type: 'choice', breakdown };
+    } else {
+      const comments = qAnswers.map(a=>a.comment).filter(c=>c&&c.trim());
+      if (comments.length === 0) return null;
+      return { question: q.text, type: 'score', comments };
+    }
+  }).filter(Boolean);
+  if (summaryData.length === 0) { showToast('No data to summarise yet', true); return; }
   let apiKey = '';
   try {
     const doc = await db.collection('settings').doc('config').get();
@@ -482,8 +581,11 @@ async function generateAISummary() {
   if (!apiKey) { showToast('Add your Claude API key in Settings first', true); switchTab('settings'); return; }
   btn.disabled = true; btn.textContent = 'Generating summary...';
   box.style.display = 'none';
-  const prompt = `You are summarising participant feedback for an HIE Social Communication program. Provide a concise, constructive summary (under 200 words) highlighting key themes and actionable insights. Be encouraging and professional.\n\n` +
-    allComments.map(q => `Question: "${q.question}"\nComments:\n${q.comments.map(c=>`- ${c}`).join('\n')}`).join('\n\n');
+  const prompt = `You are summarising participant feedback for the HIE Social Communication program. Provide a concise, constructive summary (under 200 words) highlighting key themes and actionable insights. Be encouraging and professional.\n\n` +
+    summaryData.map(q => q.type === 'choice'
+      ? `Question: "${q.question}"\nResults: ${q.breakdown}`
+      : `Question: "${q.question}"\nComments:\n${q.comments.map(c=>`- ${c}`).join('\n')}`)
+    .join('\n\n');
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',

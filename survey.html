@@ -26,6 +26,11 @@
   .score-btn{min-width:44px;min-height:44px;border-radius:8px;border:2px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.08);color:#fff;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;flex:1;max-width:54px}
   .score-btn:active{transform:scale(0.92)}
   .score-btn.selected{background:#c8a951;border-color:#c8a951;color:#0d3b2e}
+  .choice-row{display:flex;flex-direction:column;gap:10px;margin-bottom:6px}
+  .choice-btn{width:100%;padding:14px 16px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;text-align:left;transition:all 0.15s}
+  .choice-btn:active{transform:scale(0.98)}
+  .choice-btn.selected{background:#c8a951;border-color:#c8a951;color:#0d3b2e}
+  .choice-hint{color:rgba(255,255,255,0.45);font-size:0.78rem;margin-bottom:10px;font-style:italic}
   .score-labels{display:flex;justify-content:space-between;font-size:0.7rem;color:rgba(255,255,255,0.45);margin-bottom:10px;padding:0 2px}
   .comment-label{color:rgba(255,255,255,0.6);font-size:0.78rem;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
   textarea{width:100%;background:rgba(0,0,0,0.3);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;padding:10px 12px;font-size:0.9rem;font-family:inherit;resize:vertical;min-height:72px;transition:border-color 0.2s}
@@ -142,17 +147,31 @@ function renderQuestions() {
     const block = document.createElement('div');
     block.className = 'question-block';
     block.id = 'qblock-' + q.id;
-    block.innerHTML = `
-      <div class="q-text">${i + 1}. ${q.text}</div>
-      <div class="score-labels"><span>Low</span><span>High</span></div>
-      <div class="score-row" id="scores-${q.id}">
-        ${[1,2,3,4,5,6,7,8,9,10].map(n =>
-          `<button class="score-btn" onclick="selectScore('${q.id}', ${n}, this)">${n}</button>`
-        ).join('')}
-      </div>
-      <div class="comment-label">Comments (optional)</div>
-      <textarea id="comment-${q.id}" placeholder="Share any additional thoughts..."></textarea>
-    `;
+    if (q.type === 'choice' && q.options && q.options.length) {
+      block.innerHTML = `
+        <div class="q-text">${i + 1}. ${q.text}</div>
+        <div class="choice-hint">please check one</div>
+        <div class="choice-row" id="choices-${q.id}">
+          ${q.options.map(opt =>
+            `<button class="choice-btn" onclick="selectChoice('${q.id}', this)">${opt}</button>`
+          ).join('')}
+        </div>
+        <div class="comment-label">Comments (optional)</div>
+        <textarea id="comment-${q.id}" placeholder="Share any additional thoughts..."></textarea>
+      `;
+    } else {
+      block.innerHTML = `
+        <div class="q-text">${i + 1}. ${q.text}</div>
+        <div class="score-labels"><span>Low</span><span>High</span></div>
+        <div class="score-row" id="scores-${q.id}">
+          ${[1,2,3,4,5,6,7,8,9,10].map(n =>
+            `<button class="score-btn" onclick="selectScore('${q.id}', ${n}, this)">${n}</button>`
+          ).join('')}
+        </div>
+        <div class="comment-label">Comments (optional)</div>
+        <textarea id="comment-${q.id}" placeholder="Share any additional thoughts..."></textarea>
+      `;
+    }
     container.appendChild(block);
   });
 }
@@ -161,6 +180,15 @@ function selectScore(questionId, value, btn) {
   scores[questionId] = value;
   const row = document.getElementById('scores-' + questionId);
   row.querySelectorAll('.score-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('qblock-' + questionId).classList.remove('error');
+  document.getElementById('submit-error').style.display = 'none';
+}
+
+function selectChoice(questionId, btn) {
+  scores[questionId] = btn.textContent;
+  const row = document.getElementById('choices-' + questionId);
+  row.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
   document.getElementById('qblock-' + questionId).classList.remove('error');
   document.getElementById('submit-error').style.display = 'none';
@@ -185,8 +213,9 @@ async function submitSurvey() {
   try {
     const answers = questions.map(q => ({
       questionId: q.id,
-      score: scores[q.id],
-      comment: (document.getElementById('comment-' + q.id).value || '').trim()
+      ...(q.type === 'choice'
+        ? { choice: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() }
+        : { score: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() })
     }));
     await db.collection('responses').add({
       submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
