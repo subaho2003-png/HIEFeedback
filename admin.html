@@ -387,8 +387,9 @@ function renderQuestionList() {
           <div class="q-type-row">
             <label>Type:</label>
             <select onchange="changeQuestionType('${q.id}',this.value)">
-              <option value="choice" ${isChoice?'selected':''}>Multiple Choice</option>
-              <option value="score" ${!isChoice?'selected':''}>Rating 1–10</option>
+              <option value="choice" ${q.type==='choice'?'selected':''}>Multiple Choice</option>
+              <option value="score" ${q.type==='score'?'selected':''}>Rating 1–10</option>
+              <option value="comment" ${q.type==='comment'?'selected':''}>Comment Only</option>
             </select>
           </div>
           ${optionsHtml}
@@ -412,6 +413,7 @@ function changeQuestionType(id, type) {
   if (!q) return;
   q.type = type;
   if (type === 'choice' && !q.options) q.options = ['', '', ''];
+  if (type === 'comment') { delete q.options; delete q.multiSelect; }
   renderQuestionList();
 }
 
@@ -472,7 +474,7 @@ function generateQR() {
   const container = document.getElementById('qr-container');
   container.innerHTML = '';
   const url = currentSurveyId ? BASE_URL + '?id=' + currentSurveyId : BASE_URL;
-  document.getElementById('survey-url').textContent = url;
+  document.getElementById('survey-url').innerHTML = `<a href="${url}" target="_blank" style="color:#c8a951;text-decoration:underline;word-break:break-all">${url}</a>`;
   try {
     new QRCode(container, { text: url, width: 220, height: 220, colorDark:'#0d3b2e', colorLight:'#ffffff' });
   } catch(e) { container.textContent = url; }
@@ -507,7 +509,16 @@ async function loadResults() {
       const qAnswers = allResponses.flatMap(r => r.answers||[]).filter(a => a.questionId===q.id);
       const card = document.createElement('div');
       card.className = 'result-card';
-      if (q.type === 'choice' && q.options && q.options.length) {
+      if (q.type === 'comment') {
+        const responses = qAnswers.map(a => a.comment).filter(c => c&&c.trim());
+        card.innerHTML = `
+          <div class="result-qtext">${i+1}. ${q.text}</div>
+          <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:12px">${responses.length} response${responses.length===1?'':'s'}</div>
+          ${responses.length ? `<div class="comments-list">
+            ${responses.map(c=>`<div class="comment-item">"${c}"</div>`).join('')}
+          </div>` : '<div style="color:rgba(255,255,255,0.3);font-size:0.85rem">No responses yet.</div>'}
+        `;
+      } else if (q.type === 'choice' && q.options && q.options.length) {
         const counts = {};
         q.options.forEach(opt => { counts[opt] = 0; });
         qAnswers.forEach(a => {
@@ -570,7 +581,11 @@ async function generateAISummary() {
   const textEl = document.getElementById('ai-text');
   const summaryData = questionList.map(q => {
     const qAnswers = allResponses.flatMap(r => r.answers||[]).filter(a => a.questionId===q.id);
-    if (q.type === 'choice' && q.options && q.options.length) {
+    if (q.type === 'comment') {
+      const comments = qAnswers.map(a=>a.comment).filter(c=>c&&c.trim());
+      if (comments.length === 0) return null;
+      return { question: q.text, type: 'comment', comments };
+    } else if (q.type === 'choice' && q.options && q.options.length) {
       const counts = {};
       q.options.forEach(opt => { counts[opt] = 0; });
       qAnswers.forEach(a => {
@@ -599,7 +614,7 @@ async function generateAISummary() {
   const prompt = `You are summarising participant feedback for the HIE Social Communication program. Provide a concise, constructive summary (under 200 words) highlighting key themes and actionable insights. Be encouraging and professional.\n\n` +
     summaryData.map(q => q.type === 'choice'
       ? `Question: "${q.question}"\nResults: ${q.breakdown}`
-      : `Question: "${q.question}"\nComments:\n${q.comments.map(c=>`- ${c}`).join('\n')}`)
+      : `Question: "${q.question}"\nResponses:\n${q.comments.map(c=>`- ${c}`).join('\n')}`)
     .join('\n\n');
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {

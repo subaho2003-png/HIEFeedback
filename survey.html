@@ -160,6 +160,11 @@ function renderQuestions() {
         <div class="comment-label">Comments (optional)</div>
         <textarea id="comment-${q.id}" placeholder="Share any additional thoughts..."></textarea>
       `;
+    } else if (q.type === 'comment') {
+      block.innerHTML = `
+        <div class="q-text">${i + 1}. ${q.text}</div>
+        <textarea id="comment-${q.id}" placeholder="Please share your thoughts..." style="min-height:100px"></textarea>
+      `;
     } else {
       block.innerHTML = `
         <div class="q-text">${i + 1}. ${q.text}</div>
@@ -206,7 +211,7 @@ function selectChoice(questionId, btn, multiSelect) {
 
 async function submitSurvey() {
   // Validate all questions answered
-  const unanswered = questions.filter(q => scores[q.id] === undefined);
+  const unanswered = questions.filter(q => q.type !== 'comment' && scores[q.id] === undefined);
   if (unanswered.length > 0) {
     unanswered.forEach(q => document.getElementById('qblock-' + q.id).classList.add('error'));
     const errEl = document.getElementById('submit-error');
@@ -223,9 +228,11 @@ async function submitSurvey() {
   try {
     const answers = questions.map(q => ({
       questionId: q.id,
-      ...(q.type === 'choice'
-        ? { [q.multiSelect ? 'choices' : 'choice']: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() }
-        : { score: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() })
+      ...(q.type === 'comment'
+        ? { comment: (document.getElementById('comment-' + q.id)?.value || '').trim() }
+        : q.type === 'choice'
+          ? { [q.multiSelect ? 'choices' : 'choice']: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() }
+          : { score: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() })
     }));
     await db.collection('responses').add({
       submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
