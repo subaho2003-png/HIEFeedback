@@ -128,6 +128,8 @@ what is the usernma<!DOCTYPE html>
     <div class="card">
       <div class="card-title">Survey Title</div>
       <input type="text" id="q-title" placeholder="e.g. HIE Social Comm Program Feedback">
+      <div class="section-title">Instructions</div>
+      <textarea id="q-instructions" rows="3" placeholder="e.g. Please select your answer for each question. Comments are optional." style="width:100%;background:rgba(0,0,0,0.3);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;padding:10px 12px;font-size:0.9rem;font-family:inherit;resize:vertical;margin-bottom:4px;transition:border-color 0.2s"></textarea>
       <div class="section-title">Questions</div>
       <div id="questions-list"></div>
       <button class="btn btn-success" style="margin-top:8px" onclick="addQuestion()">+ Add Question</button>
@@ -327,6 +329,7 @@ function createNewSurvey() {
 // ── BUILDER ───────────────────────────────────────────────────────────────────
 function loadBuilderWithCurrentSurvey() {
   document.getElementById('q-title').value = currentSurvey.title;
+  document.getElementById('q-instructions').value = currentSurvey.instructions || '';
   document.getElementById('active-toggle').checked = currentSurvey.active;
   renderQuestionList();
   updateCurrentSurveyBar();
@@ -429,6 +432,7 @@ function deleteQuestion(id) {
 
 async function saveQuestionnaire() {
   currentSurvey.title = document.getElementById('q-title').value.trim();
+  currentSurvey.instructions = document.getElementById('q-instructions').value.trim();
   if (!currentSurvey.title) { showToast('Please enter a title', true); return; }
   if (currentSurvey.questions.length === 0) { showToast('Add at least one question', true); return; }
   if (currentSurvey.questions.some(q => !q.text.trim())) { showToast('All questions must have text', true); return; }
