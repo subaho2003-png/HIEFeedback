@@ -306,7 +306,7 @@ function selectSurvey(id) {
   currentSurveyId = id;
   const survey = allSurveys.find(s => s.id === id);
   if (!survey) return;
-  currentSurvey = { title: survey.title||'', questions: survey.questions||[], active: survey.active||false };
+  currentSurvey = { title: survey.title||'', instructions: survey.instructions||'', questions: survey.questions||[], active: survey.active||false };
   // Update selected state in list
   document.querySelectorAll('.survey-item').forEach(el => el.classList.remove('selected'));
   const el = document.getElementById('sitem-' + id);
