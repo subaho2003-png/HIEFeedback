@@ -182,6 +182,13 @@
     <button class="btn btn-primary" onclick="saveApiKey()">Save API Key</button>
   </div>
   <div class="card">
+    <div class="card-title">Clear Survey Data</div>
+    <p style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:14px;line-height:1.5">Permanently delete all responses from the selected survey. Enter the security code to proceed.</p>
+    <label>Security Code</label>
+    <input type="password" id="clear-code-input" placeholder="••••" maxlength="4">
+    <button class="btn btn-danger" style="margin-top:8px" onclick="clearDataWithCode()">Clear All Responses</button>
+  </div>
+  <div class="card">
     <div class="card-title">Admin Account</div>
     <button class="btn btn-danger" onclick="logout()">Sign Out</button>
   </div>
@@ -657,6 +664,45 @@ async function saveApiKey() {
     document.getElementById('api-key-input').placeholder = key.substring(0,12) + '••••••••';
     showToast('API key saved securely!');
   } catch(e) { showToast('Save failed: ' + e.message, true); }
+}
+
+// ── CLEAR DATA ────────────────────────────────────────────────────────────────
+async function clearDataWithCode() {
+  if (!currentSurveyId) {
+    showToast('Please select a survey first', true);
+    return;
+  }
+  const code = document.getElementById('clear-code-input').value.trim();
+  if (code !== '1961') {
+    showToast('Invalid code', true);
+    document.getElementById('clear-code-input').value = '';
+    return;
+  }
+  const confirmed = confirm(`WARNING: You are about to permanently delete all ${allResponses.length} response(s) from "${currentSurvey.title}".
+
+This action cannot be undone.
+
+Click OK to confirm deletion.`);
+  if (!confirmed) return;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Deleting...';
+  try {
+    const responsesSnap = await db.collection('responses').where('questionnaireId', '==', currentSurveyId).get();
+    const batch = db.batch();
+    responsesSnap.docs.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+    const count = responsesSnap.size;
+    document.getElementById('clear-code-input').value = '';
+    showToast(`Deleted ${count} response${count === 1 ? '' : 's'}!`);
+    allResponses = [];
+    loadResults();
+  } catch(e) {
+    showToast('Deletion failed: ' + e.message, true);
+    console.error(e);
+  }
+  btn.disabled = false;
+  btn.textContent = 'Clear All Responses';
 }
 </script>
 </body>
