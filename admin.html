@@ -512,17 +512,43 @@ async function loadResults() {
       return;
     }
     container.innerHTML = `<div class="resp-count">${allResponses.length} response${allResponses.length===1?'':'s'} total</div>`;
+
+    // Build CM/V prefix map from the choice question about volunteering
+    const roleQ = questionList.find(q =>
+      q.type === 'choice' && (q.options||[]).some(o => o.toLowerCase().includes('committee member'))
+    );
+    const prefixMap = {};
+    if (roleQ) {
+      allResponses.forEach((r, rIdx) => {
+        const ans = (r.answers||[]).find(a => a.questionId === roleQ.id);
+        if (ans) {
+          const selected = (ans.choices || (ans.choice ? [ans.choice] : [])).join(' ').toLowerCase();
+          if (selected.includes('committee member')) prefixMap[rIdx] = 'CM';
+          else if (selected.includes('occasional helper') || selected.includes('volunteer')) prefixMap[rIdx] = 'V';
+        }
+      });
+    }
+
     questionList.forEach((q, i) => {
       const qAnswers = allResponses.flatMap(r => r.answers||[]).filter(a => a.questionId===q.id);
       const card = document.createElement('div');
       card.className = 'result-card';
       if (q.type === 'comment') {
-        const responses = qAnswers.map(a => a.comment).filter(c => c&&c.trim());
+        const responses = [];
+        allResponses.forEach((r, rIdx) => {
+          const ans = (r.answers||[]).find(a => a.questionId === q.id);
+          const text = ans?.comment?.trim();
+          if (!text) return;
+          const prefix = prefixMap[rIdx];
+          responses.push(prefix
+            ? `<strong style="color:#c8a951">${prefix}</strong> ${text}`
+            : `"${text}"`);
+        });
         card.innerHTML = `
           <div class="result-qtext">${i+1}. ${q.text}</div>
           <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:12px">${responses.length} response${responses.length===1?'':'s'}</div>
           ${responses.length ? `<div class="comments-list">
-            ${responses.map(c=>`<div class="comment-item">"${c}"</div>`).join('')}
+            ${responses.map(c=>`<div class="comment-item">${c}</div>`).join('')}
           </div>` : '<div style="color:rgba(255,255,255,0.3);font-size:0.85rem">No responses yet.</div>'}
         `;
       } else if (q.type === 'choice' && q.options && q.options.length) {

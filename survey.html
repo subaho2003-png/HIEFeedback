@@ -210,17 +210,6 @@ function selectChoice(questionId, btn, multiSelect) {
 }
 
 async function submitSurvey() {
-  // Validate all questions answered
-  const unanswered = questions.filter(q => q.type !== 'comment' && scores[q.id] === undefined);
-  if (unanswered.length > 0) {
-    unanswered.forEach(q => document.getElementById('qblock-' + q.id).classList.add('error'));
-    const errEl = document.getElementById('submit-error');
-    errEl.textContent = 'Please rate all questions before submitting.';
-    errEl.style.display = 'block';
-    document.getElementById('qblock-' + unanswered[0].id).scrollIntoView({behavior:'smooth', block:'center'});
-    return;
-  }
-
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = 'Submitting...';
@@ -231,8 +220,8 @@ async function submitSurvey() {
       ...(q.type === 'comment'
         ? { comment: (document.getElementById('comment-' + q.id)?.value || '').trim() }
         : q.type === 'choice'
-          ? { [q.multiSelect ? 'choices' : 'choice']: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() }
-          : { score: scores[q.id], comment: (document.getElementById('comment-' + q.id)?.value || '').trim() })
+          ? { [q.multiSelect ? 'choices' : 'choice']: scores[q.id] !== undefined ? scores[q.id] : (q.multiSelect ? [] : null), comment: (document.getElementById('comment-' + q.id)?.value || '').trim() }
+          : { score: scores[q.id] !== undefined ? scores[q.id] : null, comment: (document.getElementById('comment-' + q.id)?.value || '').trim() })
     }));
     await db.collection('responses').add({
       submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
