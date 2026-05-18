@@ -87,6 +87,25 @@
   .survey-item-badge{font-size:0.7rem;font-weight:700;padding:3px 8px;border-radius:20px;background:rgba(45,138,69,0.4);color:#4cd964;border:1px solid rgba(45,138,69,0.5)}
   .active-label{font-size:0.72rem;color:#4cd964;font-weight:700;margin-left:6px}
   .current-survey-bar{background:rgba(200,169,81,0.15);border:1px solid rgba(200,169,81,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.82rem;color:#c8a951;font-weight:600}
+  @media print {
+    @page { margin: 18mm 14mm; }
+    body { background: #fff !important; color: #000 !important; }
+    header, .tab-bar, #pdf-btn-row, #ai-btn-row { display: none !important; }
+    .screen { display: none !important; padding: 0 !important; }
+    #screen-results { display: block !important; max-width: 100% !important; padding: 0 !important; }
+    .current-survey-bar { background: #f5f0e0 !important; color: #7a5c10 !important; border-color: #c8a951 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .result-card { background: #fff !important; border: 1px solid #ccc !important; color: #000 !important; break-inside: avoid; margin-bottom: 10px; }
+    .result-qtext { color: #000 !important; font-weight: 700; }
+    .avg-num { color: #7a5c10 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .avg-label, .resp-count { color: #555 !important; }
+    .score-bar { background: #e0e0e0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .score-fill { background: #c8a951 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .comment-item { color: #333 !important; border-bottom-color: #ddd !important; }
+    .comments-list { border-top-color: #ddd !important; }
+    .ai-box { background: #f9f5e8 !important; border-color: #c8a951 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .ai-box-title { color: #7a5c10 !important; }
+    .ai-text { color: #222 !important; }
+  }
 </style>
 </head>
 <body>
@@ -156,9 +175,12 @@
 
 <!-- RESULTS TAB -->
 <div id="screen-results" class="screen">
+  <div id="pdf-btn-row" style="margin-bottom:14px">
+    <button class="btn btn-primary" onclick="window.print()" style="padding:11px 20px;font-size:0.85rem">Save as PDF</button>
+  </div>
   <div id="results-survey-bar" class="current-survey-bar" style="display:none"></div>
   <div id="results-container"><div class="no-responses">Loading results...</div></div>
-  <div style="margin-top:16px">
+  <div id="ai-btn-row" style="margin-top:16px">
     <button class="btn btn-primary" id="ai-btn" onclick="generateAISummary()">Generate AI Summary of Comments</button>
   </div>
   <div id="ai-summary-box" style="display:none" class="ai-box">
