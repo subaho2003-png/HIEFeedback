@@ -176,7 +176,7 @@
 <!-- RESULTS TAB -->
 <div id="screen-results" class="screen">
   <div id="pdf-btn-row" style="margin-bottom:14px">
-    <button class="btn btn-primary" onclick="window.print()" style="padding:11px 20px;font-size:0.85rem">Save as PDF</button>
+    <button class="btn btn-primary" id="pdf-btn" onclick="generatePDF()" style="padding:11px 20px;font-size:0.85rem">Save as PDF</button>
   </div>
   <div id="results-survey-bar" class="current-survey-bar" style="display:none"></div>
   <div id="results-container"><div class="no-responses">Loading results...</div></div>
@@ -222,6 +222,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyBP8QXmshUe0thrGkPgEkTYVmlQtQFkWAA",
@@ -712,6 +713,146 @@ async function saveApiKey() {
     document.getElementById('api-key-input').placeholder = key.substring(0,12) + '••••••••';
     showToast('API key saved securely!');
   } catch(e) { showToast('Save failed: ' + e.message, true); }
+}
+
+// ── PDF EXPORT ────────────────────────────────────────────────────────────────
+function generatePDF() {
+  if (!questionList.length || !allResponses.length) { showToast('No results to export', true); return; }
+  const btn = document.getElementById('pdf-btn');
+  btn.disabled = true; btn.textContent = 'Generating...';
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 16;
+    const contentW = pageW - margin * 2;
+    const gold = [200, 169, 81];
+    const darkGreen = [13, 59, 46];
+    const lgray = [220, 220, 220];
+    const dgray = [100, 100, 100];
+    let y = 0;
+
+    function checkPage(needed) {
+      if (y + needed > pageH - 14) { doc.addPage(); y = 20; }
+    }
+
+    // Header bar
+    doc.setFillColor(...darkGreen);
+    doc.rect(0, 0, pageW, 26, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(15); doc.setTextColor(...gold);
+    doc.text('HIE Feedback', margin, 11);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(200, 200, 200);
+    doc.text('Survey Results', margin, 18);
+    const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    doc.text(dateStr, pageW - margin, 18, { align: 'right' });
+    y = 34;
+
+    // Title + count
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(0, 0, 0);
+    const titleLines = doc.splitTextToSize(currentSurvey.title || 'Untitled Survey', contentW);
+    doc.text(titleLines, margin, y); y += titleLines.length * 6 + 1;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(...dgray);
+    doc.text(`${allResponses.length} response${allResponses.length === 1 ? '' : 's'}`, margin, y); y += 8;
+
+    questionList.forEach((q, i) => {
+      const qAnswers = allResponses.flatMap(r => r.answers || []).filter(a => a.questionId === q.id);
+      checkPage(18);
+
+      // Question text
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(0, 0, 0);
+      const qLines = doc.splitTextToSize(`${i + 1}. ${q.text}`, contentW);
+      checkPage(qLines.length * 5 + 4);
+      doc.text(qLines, margin, y); y += qLines.length * 5 + 3;
+
+      if (q.type === 'comment') {
+        const resps = qAnswers.map(a => a.comment).filter(c => c && c.trim());
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...dgray);
+        doc.text(`${resps.length} response${resps.length === 1 ? '' : 's'}`, margin, y); y += 5;
+        resps.forEach(c => {
+          const lines = doc.splitTextToSize(`"${c}"`, contentW - 4);
+          checkPage(lines.length * 4.5 + 2);
+          doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(55, 55, 55);
+          doc.text(lines, margin + 4, y); y += lines.length * 4.5 + 2;
+        });
+
+      } else if (q.type === 'choice' && q.options && q.options.length) {
+        const counts = {}; q.options.forEach(o => { counts[o] = 0; });
+        qAnswers.forEach(a => { (a.choices || (a.choice ? [a.choice] : [])).forEach(c => { if (counts[c] !== undefined) counts[c]++; }); });
+        const total = qAnswers.length;
+        q.options.forEach(opt => {
+          checkPage(10);
+          const count = counts[opt] || 0;
+          const pct = total ? Math.round(count / total * 100) : 0;
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(0, 0, 0);
+          doc.text(opt, margin + 2, y);
+          doc.setTextColor(...dgray); doc.text(`${count} (${pct}%)`, pageW - margin, y, { align: 'right' });
+          const barX = margin + 2, barY = y + 1.5, barH = 3, barMaxW = contentW * 0.62;
+          doc.setFillColor(...lgray); doc.roundedRect(barX, barY, barMaxW, barH, 1, 1, 'F');
+          if (pct > 0) { doc.setFillColor(...gold); doc.roundedRect(barX, barY, barMaxW * pct / 100, barH, 1, 1, 'F'); }
+          y += 9;
+        });
+        const cc = qAnswers.map(a => a.comment).filter(c => c && c.trim());
+        if (cc.length) {
+          checkPage(8);
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...dgray);
+          doc.text(`COMMENTS (${cc.length})`, margin + 2, y); y += 4;
+          cc.forEach(c => {
+            const lines = doc.splitTextToSize(`"${c}"`, contentW - 4);
+            checkPage(lines.length * 4.5 + 2);
+            doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(55, 55, 55);
+            doc.text(lines, margin + 4, y); y += lines.length * 4.5 + 2;
+          });
+        }
+
+      } else {
+        const scores = qAnswers.map(a => a.score).filter(s => typeof s === 'number');
+        const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '–';
+        const pct = scores.length ? parseFloat(avg) / 10 * 100 : 0;
+        checkPage(16);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(20); doc.setTextColor(...gold);
+        doc.text(avg.toString(), margin + 2, y + 5);
+        const barX = margin + 20, barW = contentW - 22;
+        doc.setFillColor(...lgray); doc.roundedRect(barX, y, barW, 5, 1.5, 1.5, 'F');
+        if (pct > 0) { doc.setFillColor(...gold); doc.roundedRect(barX, y, barW * pct / 100, 5, 1.5, 1.5, 'F'); }
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...dgray);
+        doc.text(`${scores.length} rating${scores.length === 1 ? '' : 's'} · avg out of 10`, barX, y + 9);
+        y += 14;
+        const comments = qAnswers.map(a => a.comment).filter(c => c && c.trim());
+        if (comments.length) {
+          checkPage(8);
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...dgray);
+          doc.text(`COMMENTS (${comments.length})`, margin + 2, y); y += 4;
+          comments.forEach(c => {
+            const lines = doc.splitTextToSize(`"${c}"`, contentW - 4);
+            checkPage(lines.length * 4.5 + 2);
+            doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(55, 55, 55);
+            doc.text(lines, margin + 4, y); y += lines.length * 4.5 + 2;
+          });
+        }
+      }
+
+      y += 3;
+      checkPage(4);
+      doc.setDrawColor(...lgray); doc.line(margin, y, pageW - margin, y); y += 7;
+    });
+
+    // AI summary if visible
+    const aiBox = document.getElementById('ai-summary-box');
+    const aiText = document.getElementById('ai-text').textContent.trim();
+    if (aiBox.style.display !== 'none' && aiText) {
+      checkPage(20);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...gold);
+      doc.text('AI SUMMARY', margin, y); y += 6;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(30, 30, 30);
+      const aiLines = doc.splitTextToSize(aiText, contentW);
+      aiLines.forEach(line => { checkPage(5); doc.text(line, margin, y); y += 5; });
+    }
+
+    const filename = (currentSurvey.title || 'survey-results').replace(/[^a-z0-9]/gi, '-').toLowerCase() + '.pdf';
+    doc.save(filename);
+  } catch(e) { showToast('PDF generation failed: ' + e.message, true); console.error(e); }
+  btn.disabled = false; btn.textContent = 'Save as PDF';
 }
 
 // ── CLEAR DATA ────────────────────────────────────────────────────────────────
