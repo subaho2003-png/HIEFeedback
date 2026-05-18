@@ -176,7 +176,7 @@
 <!-- RESULTS TAB -->
 <div id="screen-results" class="screen">
   <div id="pdf-btn-row" style="margin-bottom:14px">
-    <button class="btn btn-primary" id="pdf-btn" onclick="generatePDF()" style="padding:11px 20px;font-size:0.85rem">Save as PDF</button>
+    <button class="btn btn-primary" id="pdf-btn" onclick="generatePDF()" style="padding:11px 20px;font-size:0.85rem;transition:background 0.15s,transform 0.15s">Save as PDF</button>
   </div>
   <div id="results-survey-bar" class="current-survey-bar" style="display:none"></div>
   <div id="results-container"><div class="no-responses">Loading results...</div></div>
@@ -719,8 +719,11 @@ async function saveApiKey() {
 function generatePDF() {
   if (!questionList.length || !allResponses.length) { showToast('No results to export', true); return; }
   const btn = document.getElementById('pdf-btn');
-  btn.disabled = true; btn.textContent = 'Generating...';
-  try {
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+  btn.style.background = 'linear-gradient(135deg,#a07830,#7a5c10)';
+  // Yield to the browser so the button state renders before heavy work starts
+  setTimeout(async () => { try {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const pageW = doc.internal.pageSize.getWidth();
@@ -850,9 +853,18 @@ function generatePDF() {
     }
 
     const filename = (currentSurvey.title || 'survey-results').replace(/[^a-z0-9]/gi, '-').toLowerCase() + '.pdf';
-    doc.save(filename);
-  } catch(e) { showToast('PDF generation failed: ' + e.message, true); console.error(e); }
-  btn.disabled = false; btn.textContent = 'Save as PDF';
+    const pdfBlob = doc.output('blob');
+    const file = new File([pdfBlob], filename, { type: 'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: (currentSurvey.title || 'Survey') + ' Results' });
+    } else {
+      doc.save(filename);
+    }
+  } catch(e) {
+    if (e.name !== 'AbortError') { showToast('PDF export failed: ' + e.message, true); console.error(e); }
+  }
+  btn.disabled = false; btn.textContent = 'Save as PDF'; btn.style.background = '';
+  }, 60);
 }
 
 // ── CLEAR DATA ────────────────────────────────────────────────────────────────
