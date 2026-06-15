@@ -681,7 +681,7 @@ async function generateAISummary() {
         'anthropic-dangerous-direct-browser-access': 'true',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:600, messages:[{role:'user',content:prompt}] })
+      body: JSON.stringify({ model:'claude-haiku-4-5', max_tokens:600, messages:[{role:'user',content:prompt}] })
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error?.message || 'API error');
